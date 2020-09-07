@@ -62,23 +62,24 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+a_1 = [ones(m, 1) X];
 
+%z_2 = a_1*Theta1'
+a_2 = sigmoid(a_1*Theta1');
+a_2 = [ones(size(a_2, 1), 1) a_2];
 
+%z_3 = a_2*Theta2'
+a_3 = sigmoid(a_2*Theta2');
+%H=a_3
 
+y_onehoting = zeros(m, num_labels);
+for i=1:m,
+  y_onehoting(i,y(i))=1;
+end
 
+H = a_3;
 
-
-
-
-
-
-
-
-
-
-
-
-
+J = (1/m)*sum(sum(-(y_onehoting).*log(H) - (1-y_onehoting).*log(1-H)));
 
 % -------------------------------------------------------------
 
