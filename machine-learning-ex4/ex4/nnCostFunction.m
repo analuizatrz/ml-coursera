@@ -39,6 +39,28 @@ Theta2_grad = zeros(size(Theta2));
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
 %
+%
+
+a_1 = [ones(m, 1) X];
+
+z_2 = a_1*Theta1';
+a_2 = sigmoid(z_2);
+a_2 = [ones(size(a_2, 1), 1) a_2];
+
+z_3 = a_2*Theta2';
+a_3 = sigmoid(z_3);
+
+H = a_3;
+
+y_onehoting = zeros(m, num_labels);
+for i=1:m,
+  y_onehoting(i,y(i))=1;
+end
+
+
+J = (1/m)*sum(sum(-(y_onehoting).*log(H) - (1-y_onehoting).*log(1-H))) ...
+    + (lambda/(2*m))*(sum(sum(Theta1(:,2:end).^2))+sum(sum(Theta2(:,2:end).^2)));
+
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
@@ -54,35 +76,19 @@ Theta2_grad = zeros(size(Theta2));
 %               over the training examples if you are implementing it for the 
 %               first time.
 %
+
+delta_3 = a_3 - y_onehoting; % 5000x10 - 5000x10 = 5000x10
+delta_2 = delta_3*Theta2(:,2:end).*sigmoidGradient(z_2); % 5000x25
+
+Theta1_grad = (1/m)*(delta_2'*a_1);% 5000x25' * 5000x401 = 25x401
+Theta2_grad = (1/m)*(delta_3'*a_2);% 5000x10' * 5000x126 = 10x26
+
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
 %               backpropagation. That is, you can compute the gradients for
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
-%
-
-a_1 = [ones(m, 1) X];
-
-%z_2 = a_1*Theta1'
-a_2 = sigmoid(a_1*Theta1');
-a_2 = [ones(size(a_2, 1), 1) a_2];
-
-%z_3 = a_2*Theta2'
-a_3 = sigmoid(a_2*Theta2');
-%H=a_3
-
-y_onehoting = zeros(m, num_labels);
-for i=1:m,
-  y_onehoting(i,y(i))=1;
-end
-
-H = a_3;
-
-J = (1/m)*sum(sum(-(y_onehoting).*log(H) - (1-y_onehoting).*log(1-H))) ...
-    + (lambda/(2*m))*(sum(sum(Theta1(:,2:end).^2))+sum(sum(Theta2(:,2:end).^2)));
-
-% -------------------------------------------------------------
 
 % =========================================================================
 
