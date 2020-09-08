@@ -38,8 +38,6 @@ Theta2_grad = zeros(size(Theta2));
 %         variable J. After implementing Part 1, you can verify that your
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
-%
-%
 
 a_1 = [ones(m, 1) X];
 
@@ -75,7 +73,6 @@ J = (1/m)*sum(sum(-(y_onehoting).*log(H) - (1-y_onehoting).*log(1-H))) ...
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
-%
 
 delta_3 = a_3 - y_onehoting; % 5000x10 - 5000x10 = 5000x10
 delta_2 = delta_3*Theta2(:,2:end).*sigmoidGradient(z_2); % 5000x25
@@ -89,6 +86,9 @@ Theta2_grad = (1/m)*(delta_3'*a_2);% 5000x10' * 5000x126 = 10x26
 %               backpropagation. That is, you can compute the gradients for
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
+
+Theta1_grad(:, 2:end) = Theta1_grad(:, 2:end) + (lambda/m) * Theta1(:, 2:end);
+Theta2_grad(:, 2:end) = Theta2_grad(:, 2:end) + (lambda/m) * Theta2(:, 2:end);
 
 % =========================================================================
 
